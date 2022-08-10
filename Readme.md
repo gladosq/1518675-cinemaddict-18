@@ -33,7 +33,6 @@ _`.editorconfig`, `.gitattributes`._
 <img width="769" alt="SSH" src="https://cloud.githubusercontent.com/assets/259739/20264180/42704126-aa7b-11e6-9ab4-73372b812a53.png">
 
 Клонировать репозиторий можно так:
-
 ```
 git clone SSH-адрес_вашего_форка
 ```
