@@ -1,8 +1,7 @@
 # Проект «Киноман»
 
 * Студент: [Никита Шишкин](https://up.htmlacademy.ru/ecmascript/18/user/1518675).
-* Наставник: `Неизвестно`.
-
+* Наставник: [Евгений Лепёшкин](https://htmlacademy.ru/profile/id144641).
 ---
 
 _Не удаляйте и не изменяйте папки и файлы:_
@@ -33,7 +32,6 @@ _`.editorconfig`, `.gitattributes`._
 <img width="769" alt="SSH" src="https://cloud.githubusercontent.com/assets/259739/20264180/42704126-aa7b-11e6-9ab4-73372b812a53.png">
 
 Клонировать репозиторий можно так:
-
 ```
 git clone SSH-адрес_вашего_форка
 ```
