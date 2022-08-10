@@ -2,7 +2,6 @@
 
 * Студент: [Никита Шишкин](https://up.htmlacademy.ru/ecmascript/18/user/1518675).
 * Наставник: [Евгений Лепёшкин](https://htmlacademy.ru/profile/id144641).
-
 ---
 
 _Не удаляйте и не изменяйте папки и файлы:_
