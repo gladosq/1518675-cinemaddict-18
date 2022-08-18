@@ -7,6 +7,8 @@ import NewPopupTopContainerView from '../view/popup-top-container-view.js';
 import NewPopupBottomContainerView from '../view/popup-bottom-container-view.js';
 import NewSingleCommentView from '../view/popup-single-comment-view.js';
 
+import {generateComments} from '../mock/comment.js';
+
 import {render, RenderPosition} from '../render.js';
 
 export default class BoardPresenter {
@@ -18,10 +20,6 @@ export default class BoardPresenter {
     /* --- Подключаем модель фильмов --- */
     this.filmsModel = filmsModel;
     this.boardFilms = [...this.filmsModel.getFilms()];
-
-    /* --- Подключаем модель комментариев --- */
-    this.commentsModel = commentsModel;
-    this.filmComments = [...this.commentsModel.getComments()];
 
     render(new NewSortFilterView(), boardContainer);
     render(new NewFilmListView(), boardContainer);
@@ -35,11 +33,16 @@ export default class BoardPresenter {
     render(new NewShowMoreButtonView(), filmList);
 
     const footer = document.querySelector('.footer');
-    render(new NewPopupWrapperView(), footer, RenderPosition.AFTEREND);
 
+    /* --- Рендерим попап --- */
+    render(new NewPopupWrapperView(), footer, RenderPosition.AFTEREND);
     const popupInnerWrapper = document.querySelector('.film-details__inner');
-    render(new NewPopupTopContainerView(), popupInnerWrapper);
+    render(new NewPopupTopContainerView(this.boardFilms[0]['filmInfo']), popupInnerWrapper);
     render(new NewPopupBottomContainerView(), popupInnerWrapper);
+
+    /* --- Подключаем модель комментариев --- */
+    this.commentsModel = commentsModel;
+    this.filmComments = generateComments(this.boardFilms[0]['comments']);
 
     /* --- Рендерим комментарии --- */
     const filmCommentsList = document.querySelector('.film-details__comments-list');

@@ -5,4 +5,10 @@ const getRandomInteger = (a = 0, b = 1) => {
   return Math.floor(lower + Math.random() * (upper - lower + 1));
 };
 
-export {getRandomInteger};
+const getRandomDate = () => {
+  const maxDate = Date.now();
+  const timestamp = Math.floor(Math.random() * maxDate);
+  return new Date(timestamp);
+};
+
+export {getRandomInteger, getRandomDate};
