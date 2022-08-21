@@ -8,8 +8,9 @@ import NewPopupBottomContainerView from '../view/popup-bottom-container-view.js'
 import NewSingleCommentView from '../view/popup-single-comment-view.js';
 
 import {generateComments} from '../mock/comment.js';
-
 import {render, RenderPosition} from '../render.js';
+
+import {checkNotEsc} from '../utils.js';
 
 export default class BoardPresenter {
   boardComponent = document.querySelector('.main');
@@ -34,11 +35,54 @@ export default class BoardPresenter {
 
     const footer = document.querySelector('.footer');
 
-    /* --- Рендерим попап --- */
-    render(new NewPopupWrapperView(), footer, RenderPosition.AFTEREND);
-    const popupInnerWrapper = document.querySelector('.film-details__inner');
-    render(new NewPopupTopContainerView(this.boardFilms[0]['filmInfo']), popupInnerWrapper);
-    render(new NewPopupBottomContainerView(), popupInnerWrapper);
+    const showPopup = () => {
+      render(new NewPopupWrapperView(), footer, RenderPosition.AFTEREND);
+      const popupInnerWrapper = document.querySelector('.film-details__inner');
+      render(new NewPopupTopContainerView(films[0]['filmInfo']), popupInnerWrapper);
+      render(new NewPopupBottomContainerView(), popupInnerWrapper);
+
+      document.body.classList.add('hide-overflow');
+    }
+
+    const hidePopup = () => {
+      document.querySelector('.film-details').remove();
+      document.body.classList.remove('hide-overflow');
+    }
+
+    const onEscKeyDown = (evt) => {
+
+      if (checkNotEsc) {
+        evt.preventDefault();
+
+        hidePopup();
+
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    };
+
+    /* --- Обработчики на открытие и закрытие попапа --- */
+    const filmCardLinks = this.boardContainer.querySelectorAll('.film-card__link');
+    const filmDetailsCloseButton = this.boardContainer.querySelector('.film-details__close-btn');
+
+
+    const films = this.boardFilms;
+
+    filmCardLinks.forEach((item) => {
+      item.addEventListener('click', () => {
+
+        showPopup();
+
+        document.addEventListener('keydown', onEscKeyDown);
+        console.log(document.querySelector('.film-details__close-btn'));
+        document.querySelector('.film-details__close-btn').addEventListener('click', (evt) => {
+          console.log(evt.target);
+          document.removeEventListener('keydown', onEscKeyDown);
+          hidePopup();
+        });
+      })
+    })
+
+    // const popupInnerWrapper = document.querySelector('.film-details__inner');
 
     /* --- Подключаем модель комментариев --- */
     this.commentsModel = commentsModel;

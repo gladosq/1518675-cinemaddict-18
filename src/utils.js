@@ -11,4 +11,6 @@ const getRandomDate = () => {
   return new Date(timestamp);
 };
 
-export {getRandomInteger, getRandomDate};
+const checkNotEsc = (evt) => evt.type === 'keydown' && evt.key !== 'Escape';
+
+export {getRandomInteger, getRandomDate, checkNotEsc};
