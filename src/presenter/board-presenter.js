@@ -20,79 +20,75 @@ export default class BoardPresenter {
 
     /* --- Подключаем модель фильмов --- */
     this.filmsModel = filmsModel;
-    this.boardFilms = [...this.filmsModel.getFilms()];
+    this.boardFilms = [...this.filmsModel.films];
 
     render(new NewSortFilterView(), boardContainer);
     render(new NewFilmListView(), boardContainer);
 
     /* --- Рендерим карточки фильмов в контейнер --- */
     const filmList = document.querySelector('.films-list__container');
+
     for (let i = 0; i < this.boardFilms.length; i++) {
-      render(new NewFilmCardView(this.boardFilms[i]), filmList);
+      this.#renderFilm(this.boardFilms[i]);
     }
 
     render(new NewShowMoreButtonView(), filmList);
 
+    /* --- Подключаем модель комментариев --- */
+    this.commentsModel = commentsModel;
+  };
+
+  #renderFilm = (film) => {
+    const filmComponent = new NewFilmCardView(film);
+    const filmList = document.querySelector('.films-list__container');
+
     const footer = document.querySelector('.footer');
 
-    const showPopup = () => {
-      render(new NewPopupWrapperView(), footer, RenderPosition.AFTEREND);
-      const popupInnerWrapper = document.querySelector('.film-details__inner');
-      render(new NewPopupTopContainerView(films[0]['filmInfo']), popupInnerWrapper);
-      render(new NewPopupBottomContainerView(), popupInnerWrapper);
+    const renderComments = () => {
+      const filmCommentsList = document.querySelector('.film-details__comments-list');
+      for (let i = 0; i < this.filmComments.length; i++) {
 
-      document.body.classList.add('hide-overflow');
-    }
+        render(new NewSingleCommentView(this.filmComments[i]), filmCommentsList);
+      }
+    };
 
     const hidePopup = () => {
       document.querySelector('.film-details').remove();
       document.body.classList.remove('hide-overflow');
-    }
+    };
 
     const onEscKeyDown = (evt) => {
-
       if (checkNotEsc) {
         evt.preventDefault();
 
         hidePopup();
-
         document.removeEventListener('keydown', onEscKeyDown);
       }
     };
 
-    /* --- Обработчики на открытие и закрытие попапа --- */
-    const filmCardLinks = this.boardContainer.querySelectorAll('.film-card__link');
-    const filmDetailsCloseButton = this.boardContainer.querySelector('.film-details__close-btn');
+    const showPopup = () => {
+      render(new NewPopupWrapperView(), footer, RenderPosition.AFTEREND);
+      const popupInnerWrapper = document.querySelector('.film-details__inner');
+      render(new NewPopupTopContainerView(film['filmInfo']), popupInnerWrapper);
+      render(new NewPopupBottomContainerView(film['comments']), popupInnerWrapper);
 
+      document.body.classList.add('hide-overflow');
+    };
 
-    const films = this.boardFilms;
+    filmComponent.element.querySelector('.film-card__link').addEventListener('click', () => {
+      showPopup();
+      renderComments();
 
-    filmCardLinks.forEach((item) => {
-      item.addEventListener('click', () => {
+      document.addEventListener('keydown', onEscKeyDown);
 
-        showPopup();
+      document.querySelector('.film-details__close-btn').addEventListener('click', () => {
+        document.removeEventListener('keydown', onEscKeyDown);
+        hidePopup();
+      });
+    });
 
-        document.addEventListener('keydown', onEscKeyDown);
-        console.log(document.querySelector('.film-details__close-btn'));
-        document.querySelector('.film-details__close-btn').addEventListener('click', (evt) => {
-          console.log(evt.target);
-          document.removeEventListener('keydown', onEscKeyDown);
-          hidePopup();
-        });
-      })
-    })
+    render(filmComponent, filmList);
 
-    // const popupInnerWrapper = document.querySelector('.film-details__inner');
-
-    /* --- Подключаем модель комментариев --- */
-    this.commentsModel = commentsModel;
-    this.filmComments = generateComments(this.boardFilms[0]['comments']);
-
-    /* --- Рендерим комментарии --- */
-    const filmCommentsList = document.querySelector('.film-details__comments-list');
-    for (let i = 0; i < this.filmComments.length; i++) {
-      render(new NewSingleCommentView(this.filmComments[i]), filmCommentsList);
-    }
-
+    this.filmComments = generateComments(film['comments']);
   };
 }
