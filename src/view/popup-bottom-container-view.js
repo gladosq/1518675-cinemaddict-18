@@ -1,9 +1,7 @@
 import {createElement} from '../render.js';
 
-const createNewPopupBottomContainer = (comments) => {
-
-  return (
-    `<div class="film-details__bottom-container">
+const createNewPopupBottomContainer = () => `
+    <div class="film-details__bottom-container">
       <section class="film-details__comments-wrap">
         <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">4</span></h3>
 
@@ -40,9 +38,7 @@ const createNewPopupBottomContainer = (comments) => {
           </div>
         </form>
       </section>
-    </div>`
-  );
-};
+    </div>`;
 
 export default class NewPopupBottomContainerView {
   constructor (film) {
