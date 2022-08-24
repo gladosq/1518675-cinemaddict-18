@@ -1,59 +1,65 @@
 import {createElement} from '../render.js';
 
 const createNewPopupBottomContainer = () => `
-  <div class="film-details__bottom-container">
-    <section class="film-details__comments-wrap">
-      <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">4</span></h3>
+    <div class="film-details__bottom-container">
+      <section class="film-details__comments-wrap">
+        <h3 class="film-details__comments-title">Comments <span class="film-details__comments-count">4</span></h3>
 
-      <ul class="film-details__comments-list">
-      </ul>
+        <ul class="film-details__comments-list">
+        </ul>
 
-      <form class="film-details__new-comment" action="" method="get">
-        <div class="film-details__add-emoji-label"></div>
+        <form class="film-details__new-comment" action="" method="get">
+          <div class="film-details__add-emoji-label"></div>
 
-        <label class="film-details__comment-label">
-          <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
-        </label>
-
-        <div class="film-details__emoji-list">
-          <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
-          <label class="film-details__emoji-label" for="emoji-smile">
-            <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
+          <label class="film-details__comment-label">
+            <textarea class="film-details__comment-input" placeholder="Select reaction below and write comment here" name="comment"></textarea>
           </label>
 
-          <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
-          <label class="film-details__emoji-label" for="emoji-sleeping">
-            <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
-          </label>
+          <div class="film-details__emoji-list">
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-smile" value="smile">
+            <label class="film-details__emoji-label" for="emoji-smile">
+              <img src="./images/emoji/smile.png" width="30" height="30" alt="emoji">
+            </label>
 
-          <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
-          <label class="film-details__emoji-label" for="emoji-puke">
-            <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
-          </label>
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-sleeping" value="sleeping">
+            <label class="film-details__emoji-label" for="emoji-sleeping">
+              <img src="./images/emoji/sleeping.png" width="30" height="30" alt="emoji">
+            </label>
 
-          <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
-          <label class="film-details__emoji-label" for="emoji-angry">
-            <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
-          </label>
-        </div>
-      </form>
-    </section>
-  </div>`;
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-puke" value="puke">
+            <label class="film-details__emoji-label" for="emoji-puke">
+              <img src="./images/emoji/puke.png" width="30" height="30" alt="emoji">
+            </label>
+
+            <input class="film-details__emoji-item visually-hidden" name="comment-emoji" type="radio" id="emoji-angry" value="angry">
+            <label class="film-details__emoji-label" for="emoji-angry">
+              <img src="./images/emoji/angry.png" width="30" height="30" alt="emoji">
+            </label>
+          </div>
+        </form>
+      </section>
+    </div>`;
 
 export default class NewPopupBottomContainerView {
-  getTemplate() {
-    return createNewPopupBottomContainer();
+  constructor (film) {
+    this.film = film;
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  #element = null;
+
+  get template() {
+    return createNewPopupBottomContainer(this.film);
+  }
+
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }
