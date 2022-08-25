@@ -42,6 +42,7 @@ export default class BoardPresenter {
         filmPresenter.init(item);
       });
 
+
     this.#renderedFilmCount += FILM_COUNT_PER_STEP;
 
     if (this.#renderedFilmCount >= this.boardFilms.length) {
