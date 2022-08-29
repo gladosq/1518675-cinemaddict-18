@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createNewPopupBottomContainer = () => `
     <div class="film-details__bottom-container">
@@ -40,26 +40,17 @@ const createNewPopupBottomContainer = () => `
       </section>
     </div>`;
 
-export default class NewPopupBottomContainerView {
+export default class NewPopupBottomContainerView extends AbstractView {
+  #film = null;
+
   constructor (film) {
-    this.film = film;
+    super();
+    this.#film = film;
   }
 
   #element = null;
 
   get template() {
-    return createNewPopupBottomContainer(this.film);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
+    return createNewPopupBottomContainer(this.#film);
   }
 }

@@ -3,9 +3,11 @@ import NewPopupWrapperView from '../view/popup-wrapper-view.js';
 import NewPopupTopContainerView from '../view/popup-top-container-view.js';
 import NewPopupBottomContainerView from '../view/popup-bottom-container-view.js';
 import NewFilmCardView from '../view/film-card-view.js';
+import NewShowMoreButtonView from '../view/show-more-button-view.js';
 
 import {generateComments} from '../mock/comment.js';
-import {render, RenderPosition} from '../render.js';
+import {RenderPosition} from '../render.js';
+import {render} from '../framework/render.js';
 
 import {checkNotEsc} from '../utils.js';
 
@@ -47,7 +49,7 @@ export default class FilmPresenter {
 
     /* --- обработчик при клике на попап --- */
     const filmComponent = new NewFilmCardView(film);
-    filmComponent.element.querySelector('.film-card__link').addEventListener('click', () => {
+    filmComponent.setClickHandler(() => {
 
       /* --- показываем попап с информацией по фильму и без комментариев --- */
       showPopup();
@@ -60,7 +62,9 @@ export default class FilmPresenter {
 
       document.addEventListener('keydown', onEscKeyDown);
 
-      document.querySelector('.film-details__close-btn').addEventListener('click', () => {
+      const loadMoreButtonComponent = new NewShowMoreButtonView();
+
+      loadMoreButtonComponent.setClickHandler(() => {
         document.removeEventListener('keydown', onEscKeyDown);
         hidePopup();
       });

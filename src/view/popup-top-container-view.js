@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createNewPopupTopContainer = (film) => {
   const {title, poster, description, totalRating} = film;
@@ -75,26 +75,15 @@ const createNewPopupTopContainer = (film) => {
 };
 
 
-export default class NewPopupTopContainerView {
-  constructor (film) {
-    this.film = film;
-  }
+export default class NewPopupTopContainerView extends AbstractView {
+  #film = null;
 
-  #element = null;
+  constructor (film) {
+    super();
+    this.#film = film;
+  }
 
   get template() {
-    return createNewPopupTopContainer(this.film);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
+    return createNewPopupTopContainer(this.#film);
   }
 }
