@@ -1,4 +1,4 @@
-import {createElement} from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createNewSingleComment = (_comment) => {
   const {author, comment, emotion} = _comment;
@@ -20,26 +20,16 @@ const createNewSingleComment = (_comment) => {
   );
 };
 
-export default class NewSingleCommentView {
+export default class NewSingleCommentView extends AbstractView {
+  #comment = null;
   constructor (comment) {
-    this.comment = comment;
+    super();
+    this.#comment = comment;
   }
 
   #element = null;
 
   get template() {
-    return createNewSingleComment(this.comment);
-  }
-
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
+    return createNewSingleComment(this.#comment);
   }
 }
