@@ -26,9 +26,6 @@ const sortByRating = (films) => {
 
 const sortTypeChange = (sortType) => {
   console.log(sortType);
-
-
-
 };
 
 export {getRandomInteger, getRandomDate, checkNotEsc, sortByDate, sortByRating, sortTypeChange};
