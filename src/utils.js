@@ -14,6 +14,7 @@ const getRandomDate = () => {
   return new Date(timestamp);
 };
 
+
 const checkNotEsc = (evt) => evt.type === 'keydown' && evt.key !== 'Escape';
 
 const sortByDate = (films) => {
