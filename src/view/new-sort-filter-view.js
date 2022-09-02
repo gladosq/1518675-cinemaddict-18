@@ -1,12 +1,11 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import {SORT_TYPES} from '../mock/const.js';
-import {sortTypeChange} from '../utils.js';
 
-const createNewSortFilter = (currentSortType) => `
-  <ul class="sort">
-    <li><a href="#" class="sort__button sort__button--active" data-sort-type="${SORT_TYPES.DEFAULT}">Sort by default</a></li>
-    <li><a href="#" class="sort__button" data-sort-type="${SORT_TYPES.BY_DATE}">Sort by date</a></li>
-    <li><a href="#" class="sort__button" data-sort-type="${SORT_TYPES.BY_RATING}">Sort by rating</a></li>
+const createNewSortFilter = (currentSortType) =>
+  `<ul class="sort">
+    <li><a href="#" class="sort__button ${currentSortType === SORT_TYPES.DEFAULT ? 'sort__button--active' : ''}" data-sort-type="${SORT_TYPES.DEFAULT}">Sort by default</a></li>
+    <li><a href="#" class="sort__button ${currentSortType === SORT_TYPES.BY_DATE ? 'sort__button--active' : ''}" data-sort-type="${SORT_TYPES.BY_DATE}">Sort by date</a></li>
+    <li><a href="#" class="sort__button ${currentSortType === SORT_TYPES.BY_RATING ? 'sort__button--active' : ''}" data-sort-type="${SORT_TYPES.BY_RATING}">Sort by rating</a></li>
   </ul>`;
 
 export default class NewSortFilterView extends AbstractView {
@@ -16,7 +15,6 @@ export default class NewSortFilterView extends AbstractView {
     super();
 
     this.#currentSortFilter = currentSortFilter;
-
   }
 
   get template() {
@@ -29,9 +27,11 @@ export default class NewSortFilterView extends AbstractView {
   };
 
   #clickHandler = (evt) => {
-    evt.preventDefault();
-    console.log(evt.target.dataset.sortType);
+    if (evt.target.tagName !== 'A') {
+      return;
+    }
 
+    evt.preventDefault();
     this._callback.sortTypeChange(evt.target.dataset.sortType);
   };
 }

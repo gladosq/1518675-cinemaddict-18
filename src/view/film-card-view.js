@@ -1,5 +1,5 @@
-// import {createElement} from '../render.js';
 import AbstractView from '../framework/view/abstract-view.js';
+import dayjs from 'dayjs';
 
 const createNewFilmCard = (film) => {
   const {title, poster, description, totalRating} = film.filmInfo;
@@ -10,7 +10,7 @@ const createNewFilmCard = (film) => {
         <h3 class="film-card__title">${title}</h3>
         <p class="film-card__rating">${totalRating}</p>
         <p class="film-card__info">
-          <span class="film-card__year">1929</span>
+          <span class="film-card__year">${dayjs(film.filmInfo.release.date).format('YYYY')}</span>
           <span class="film-card__duration">1h 55m</span>
           <span class="film-card__genre">Musical</span>
         </p>

@@ -1,5 +1,4 @@
 import dayjs from 'dayjs';
-import {SORT_TYPES} from './mock/const.js';
 
 const getRandomInteger = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
@@ -18,15 +17,25 @@ const getRandomDate = () => {
 const checkNotEsc = (evt) => evt.type === 'keydown' && evt.key !== 'Escape';
 
 const sortByDate = (films) => {
-  return films.sort((a, b) => (dayjs(a.filmInfo.release.date).isAfter(dayjs(b.filmInfo.release.date)) ? 1 : -1));
+  const sortedFilms = films;
+  return sortedFilms.sort((a, b) => (dayjs(b.filmInfo.release.date).isAfter(dayjs(a.filmInfo.release.date)) ? 1 : -1));
 };
 
 const sortByRating = (films) => {
-  return films.sort((a, b) => a.filmInfo.totalRating - b.filmInfo.totalRating);
+  const sortedFilms = films;
+  return sortedFilms.sort((a, b) => b.filmInfo.totalRating - a.filmInfo.totalRating);
 };
 
 const sortTypeChange = (sortType) => {
-  console.log(sortType);
+  if (sortType === 'by-date') {
+    return sortByDate;
+  }
+
+  if (sortType === 'by-rating') {
+    return sortByRating;
+  }
+
+  return -1;
 };
 
 export {getRandomInteger, getRandomDate, checkNotEsc, sortByDate, sortByRating, sortTypeChange};
