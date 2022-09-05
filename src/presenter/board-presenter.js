@@ -37,8 +37,6 @@ export default class BoardPresenter {
     this.#boardFilms = [...this.filmsModel.films];
     this.#defaultFilms = this.#boardFilms.slice();
 
-
-
     this.#renderBoard();
   };
 
@@ -88,7 +86,7 @@ export default class BoardPresenter {
 
   #renderNoFilms = () => {
     render(new NewEmptyFilmListView, this.boardContainer);
-  }
+  };
 
   #sortFilms = (sortType) => {
 
@@ -132,9 +130,7 @@ export default class BoardPresenter {
     }
   };
 
-  #updateFilmInfo = (film) => {
+  #updateFilmInfo = () => {
 
-
-
-  }
+  };
 }

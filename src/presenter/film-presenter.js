@@ -36,7 +36,7 @@ export default class FilmPresenter {
     for (let i = 0; i < comments.length; i++) {
       render(new NewSingleCommentView(comments[i]), filmCommentsList);
     }
-  }
+  };
 
   #hidePopup = () => {
     document.querySelector('.film-details').remove();
@@ -53,19 +53,17 @@ export default class FilmPresenter {
   };
 
   #showPopup = (film) => {
-
     const footer = document.querySelector('.footer');
 
     render(new NewPopupWrapperView(), footer, RenderPosition.AFTEREND);
     const popupInnerWrapper = document.querySelector('.film-details__inner');
-    render(new NewPopupTopContainerView(film['filmInfo']), popupInnerWrapper);
-    render(new NewPopupBottomContainerView(film['comments']), popupInnerWrapper);
+    render(new NewPopupTopContainerView(this.#film['filmInfo']), popupInnerWrapper);
+    render(new NewPopupBottomContainerView(this.#film['comments']), popupInnerWrapper);
 
     document.body.classList.add('hide-overflow');
   };
 
   #showPopupClickHandler = (film) => {
-    console.log(film);
     this.#showPopup(this.#film);
 
 
@@ -76,13 +74,6 @@ export default class FilmPresenter {
     this.#renderComments(comments);
 
     document.addEventListener('keydown', this.#onEscKeyDown);
-
-    const loadMoreButtonComponent = new NewShowMoreButtonView();
-
-    loadMoreButtonComponent.setClickHandler(() => {
-      document.removeEventListener('keydown', this.#onEscKeyDown);
-      this.#hidePopup();
-    });
   };
 
   // #clickWatchListHandler = () => {
