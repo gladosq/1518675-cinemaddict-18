@@ -4,133 +4,150 @@ import NewShowMoreButtonView from '../view/show-more-button-view.js';
 import NewEmptyFilmListView from '../view/empty-film-list-view.js';
 
 import {RenderPosition} from '../render.js';
-import {render} from '../framework/render.js';
+import {render, remove} from '../framework/render.js';
 
-import {sortTypeChange} from '../utils.js';
+import {sortTypeChange, updateFilm} from '../utils.js';
 
 import FilmPresenter from '../presenter/film-presenter.js';
 
 const FILM_COUNT_PER_STEP = 5;
 
 export default class BoardPresenter {
+
   #boardContainer = null;
   #filmsModel = null;
 
-  constructor (boardContainer, filmsModel) {
-    this.boardContainer = boardContainer;
-    this.filmsModel = filmsModel;
-  }
+  #filmListComponent = new NewFilmListView();
+  #sortFilmComponent = new NewSortFilterView('default');
+  #noFilmsComponent = new NewEmptyFilmListView();
+  #loadMoreButtonComponent = new NewShowMoreButtonView();
 
   #boardFilms = [];
   #defaultFilms = [];
+  #filteredFilms = [];
+
+  /* --- Коллекция Map с id презентеров --- */
+
+  #filmsPresenterCollection = new Map();
 
   #renderedFilmCount = FILM_COUNT_PER_STEP;
 
-  #loadMoreButtonComponent = new NewShowMoreButtonView();
+  constructor (boardContainer, filmsModel) {
+    this.#boardContainer = boardContainer;
+    this.#filmsModel = filmsModel;
+  }
 
-
-  init = (boardContainer, filmsModel) => {
-    this.boardContainer = boardContainer;
-
-    this.filmsModel = filmsModel;
-
-    this.#boardFilms = [...this.filmsModel.films];
+  init = () => {
+    this.#boardFilms = [...this.#filmsModel.films];
     this.#defaultFilms = this.#boardFilms.slice();
-
     this.#renderBoard();
   };
 
-  #loadMoreHandlerClick = () => {
-    const filmPresenter = new FilmPresenter(this.boardContainer);
-
-    this.#boardFilms
-      .slice(this.#renderedFilmCount, this.#renderedFilmCount + FILM_COUNT_PER_STEP)
-      .forEach((item) => {
-        filmPresenter.init(item);
-      });
-
+  #loadMoreButtonClickHandler = () => {
+    this.#renderFilms(this.#renderedFilmCount, this.#renderedFilmCount + FILM_COUNT_PER_STEP);
     this.#renderedFilmCount += FILM_COUNT_PER_STEP;
 
     if (this.#renderedFilmCount >= this.#boardFilms.length) {
-      this.#loadMoreButtonComponent.element.remove();
-      this.#loadMoreButtonComponent.removeElement();
+      remove(this.#loadMoreButtonComponent);
+    }
+  };
+
+  /* --- Рендер блока сортировки --- */
+
+  #renderSort = () => {
+    render(this.#sortFilmComponent, this.#boardContainer, RenderPosition.AFTERBEGIN);
+    this.#sortFilmComponent.setClickHandler(this.#sortTypeChangeHandler);
+
+    if (this.#filteredFilms.length > FILM_COUNT_PER_STEP) {
+      render(this.#loadMoreButtonComponent, this.#filmListComponent, RenderPosition.AFTEREND);
+      this.#loadMoreButtonComponent.setClickHandler(this.#loadMoreButtonClickHandler);
+    }
+  };
+
+  #renderFilm = (film) => {
+    const filmPresenter = new FilmPresenter(this.#filmListComponent.element, this.#filmChangeHandler, this.#checkSinglePopupHandler);
+    filmPresenter.init(film);
+    this.#filmsPresenterCollection.set(film.id, filmPresenter);
+  };
+
+  #renderFilms = (from, to) => {
+    this.#boardFilms
+      .slice(from, to)
+      .forEach((item) => this.#renderFilm(item));
+  };
+
+  #renderNoFilms = () => {
+    render(this.#noFilmsComponent, this.#boardContainer);
+  };
+
+  #renderFilmList = () => {
+    render(this.#filmListComponent, this.#boardContainer);
+    this.#renderFilms(0, Math.min(this.#boardFilms.length, FILM_COUNT_PER_STEP));
+
+    if (this.#boardFilms.length > FILM_COUNT_PER_STEP) {
+      this.#renderLoadMoreButton();
     }
   };
 
   #renderBoard = () => {
-    const filmPresenter = new FilmPresenter(this.boardContainer);
-
     if (this.#boardFilms.length < 1) {
       this.#renderNoFilms();
       return;
     }
 
-    const sortFilterComponent = new NewSortFilterView('default');
-    render(sortFilterComponent, this.boardContainer);
-
-    render(new NewFilmListView(), this.boardContainer);
-
-    const filmList = document.querySelector('.films-list__container');
-
-    for (let i = 0; i < Math.min(this.#boardFilms.length, FILM_COUNT_PER_STEP); i++) {
-      filmPresenter.init(this.#boardFilms[i]);
-    }
-
-    if (this.#boardFilms.length > FILM_COUNT_PER_STEP) {
-      render(this.#loadMoreButtonComponent, filmList, RenderPosition.AFTEREND);
-      this.#loadMoreButtonComponent.setClickHandler(this.#loadMoreHandlerClick);
-    }
-
-    sortFilterComponent.setClickHandler(this.#sortFilms);
+    this.#renderSort();
+    this.#renderFilmList();
   };
 
-  #renderNoFilms = () => {
-    render(new NewEmptyFilmListView, this.boardContainer);
+  #renderLoadMoreButton = () => {
+    render(this.#loadMoreButtonComponent, this.#boardContainer);
+
+    this.#loadMoreButtonComponent.setClickHandler(this.#loadMoreButtonClickHandler);
   };
 
-  #sortFilms = (sortType) => {
+  #clearFilmList = () => {
 
-    const filmPresenter = new FilmPresenter(this.boardContainer);
+    /* --- Удаляем презентеры из коллекции Map --- */
+
+    this.#filmsPresenterCollection.forEach((item) => {
+      item.destroy();
+    });
+
+    this.#filmsPresenterCollection.clear();
     this.#renderedFilmCount = FILM_COUNT_PER_STEP;
 
-    document.querySelector('.sort').remove();
+    remove(this.#loadMoreButtonComponent);
+  };
 
-    const sortFilterComponent = new NewSortFilterView(sortType);
-    render(sortFilterComponent, this.boardContainer, RenderPosition.BEFOREBEGIN);
-
+  #sortTypeChangeHandler = (sortType) => {
     const changeNewFilter = sortTypeChange(sortType);
 
-    let filteredFilms = [];
-    if (changeNewFilter !== -1) {
-      filteredFilms = changeNewFilter(this.#boardFilms);
+    if (changeNewFilter !== false) {
+      this.#boardFilms = changeNewFilter(this.#boardFilms);
     } else {
-      filteredFilms = this.#defaultFilms;
+      this.#boardFilms = this.#defaultFilms.slice();
     }
 
-    this.#clearAllFilms();
+    /* --- Перерисовываем сортировку с актуальным фильтром --- */
 
-    for (let i = 0; i < Math.min(filteredFilms.length, FILM_COUNT_PER_STEP); i++) {
-      filmPresenter.init(filteredFilms[i]);
-    }
-    const filmList = document.querySelector('.films-list__container');
+    document.querySelector('.sort').remove();
+    const sortFilmComponent = new NewSortFilterView(sortType);
+    render(sortFilmComponent, this.#boardContainer, RenderPosition.AFTERBEGIN);
+    sortFilmComponent.setClickHandler(this.#sortTypeChangeHandler);
 
-    if (filteredFilms.length > FILM_COUNT_PER_STEP) {
-      render(this.#loadMoreButtonComponent, filmList, RenderPosition.AFTEREND);
-      this.#loadMoreButtonComponent.setClickHandler(this.#loadMoreHandlerClick);
-    }
-
-    sortFilterComponent.setClickHandler(this.#sortFilms);
+    this.#clearFilmList();
+    this.#renderFilms(0, Math.min(this.#boardFilms.length, FILM_COUNT_PER_STEP));
+    this.#renderLoadMoreButton();
   };
 
-  #clearAllFilms = () => {
-    const filmList = this.boardContainer.querySelector('.films-list__container');
-
-    while (filmList.firstChild) {
-      filmList.firstChild.remove();
-    }
+  #filmChangeHandler = (updatedFilm) => {
+    this.#boardFilms = updateFilm(this.#boardFilms, updatedFilm);
+    this.#filmsPresenterCollection.get(updatedFilm.id).init(updatedFilm);
   };
 
-  #updateFilmInfo = () => {
-
+  #checkSinglePopupHandler = () => {
+    if (document.querySelector('.film-details')) {
+      return true;
+    }
   };
 }

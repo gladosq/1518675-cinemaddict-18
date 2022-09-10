@@ -3,32 +3,44 @@ import NewPopupWrapperView from '../view/popup-wrapper-view.js';
 import NewPopupTopContainerView from '../view/popup-top-container-view.js';
 import NewPopupBottomContainerView from '../view/popup-bottom-container-view.js';
 import NewFilmCardView from '../view/film-card-view.js';
-import NewShowMoreButtonView from '../view/show-more-button-view.js';
+// import NewShowMoreButtonView from '../view/show-more-button-view.js';
 
 import {generateComments} from '../mock/comment.js';
 import {RenderPosition} from '../render.js';
-import {render} from '../framework/render.js';
+import {render, remove} from '../framework/render.js';
 
 import {checkNotEsc} from '../utils.js';
 
 export default class FilmPresenter {
-  #boardContainer = null;
-  #film = null;
 
-  constructor(boardContainer) {
-    this.#boardContainer = boardContainer;
+  #filmListComponent = null;
+  #changeFilm = null;
+  #filmComponent = null;
+  #film = null;
+  #checkSinglePopup = null;
+
+  constructor(filmListComponent, changeFilm, checkSinglePopup) {
+    this.#filmListComponent = filmListComponent;
+    this.#changeFilm = changeFilm;
+    this.#checkSinglePopup = checkSinglePopup;
   }
 
   init = (film) => {
 
     this.#film = film;
+    this.#filmComponent = new NewFilmCardView(film);
 
-    const filmComponent = new NewFilmCardView(film);
+    /* --- Обработчик на открытие попапа --- */
 
-    filmComponent.setClickHandler(this.#showPopupClickHandler);
+    this.#filmComponent.setClickHandler(this.#showPopupClickHandler);
 
-    const filmList = document.querySelector('.films-list__container');
-    render(filmComponent, filmList);
+    /* --- Обработчики на изменение фильма --- */
+
+    this.#filmComponent.setFavoriteClickHandler(this.#clickFavoriteHandler);
+    this.#filmComponent.setAlreadyWatchedClickHandler(this.#clickAlreadyWatchedHandler);
+    this.#filmComponent.setWatchLaterClickHandler(this.#clickWatchLaterHandler);
+
+    render(this.#filmComponent, this.#filmListComponent.querySelector('.films-list__container'), RenderPosition.BEFOREEND);
   };
 
   #renderComments = (comments) => {
@@ -44,15 +56,22 @@ export default class FilmPresenter {
   };
 
   #onEscKeyDown = (evt) => {
-    if (checkNotEsc) {
-      evt.preventDefault();
+    evt.preventDefault();
 
+    if (!checkNotEsc(evt)) {
       this.#hidePopup();
       document.removeEventListener('keydown', this.#onEscKeyDown);
     }
   };
 
-  #showPopup = (film) => {
+  #clickClosePopupButtonHandler = (evt) => {
+    evt.preventDefault();
+
+    this.#hidePopup();
+    document.removeEventListener('keydown', this.#onEscKeyDown);
+  };
+
+  #showPopup = () => {
     const footer = document.querySelector('.footer');
 
     render(new NewPopupWrapperView(), footer, RenderPosition.AFTEREND);
@@ -60,15 +79,26 @@ export default class FilmPresenter {
     render(new NewPopupTopContainerView(this.#film['filmInfo']), popupInnerWrapper);
     render(new NewPopupBottomContainerView(this.#film['comments']), popupInnerWrapper);
 
+    /* --- Обработчик на кнопку закрытия попапа --- */
+
+    const closePopupButton = document.querySelector('.film-details__close-btn');
+    closePopupButton.addEventListener('click', this.#clickClosePopupButtonHandler);
+
     document.body.classList.add('hide-overflow');
   };
 
   #showPopupClickHandler = (film) => {
-    this.#showPopup(this.#film);
 
+    /* --- Проверка на уже открытый попап --- */
 
-    /* --- Генерирум комментарии по айдишникам --- */
-    const comments = generateComments(this.#film['comments']);
+    if (this.#checkSinglePopup()) {
+      this.#hidePopup();
+    }
+
+    this.#showPopup(film);
+
+    /* --- Генерируем комментарии по айдишникам --- */
+    const comments = generateComments(film.comments);
 
     /* --- Рендерим комментарии во view --- */
     this.#renderComments(comments);
@@ -76,15 +106,24 @@ export default class FilmPresenter {
     document.addEventListener('keydown', this.#onEscKeyDown);
   };
 
-  // #clickWatchListHandler = () => {
+  destroy = () => {
+    remove(this.#filmComponent);
+  };
 
-  // }
+  #clickFavoriteHandler = () => {
+    const updatedFilm = this.#film;
+    updatedFilm.userDetails.favorite = !this.#film.userDetails.favorite;
 
-  // #clickAlreadyWatchedHandler = () => {
+    // this.#changeFilm({...this.#film, favorite: !this.#film.userDetails.favorite});
+  };
 
-  // }
+  #clickAlreadyWatchedHandler = () => {
+    const updatedFilm = this.#film;
+    updatedFilm.userDetails.alreadyWatched = !this.#film.userDetails.alreadyWatched;
+  };
 
-  // #clickAddFavoritesHandler = () => {
-
-  // }
+  #clickWatchLaterHandler = () => {
+    const updatedFilm = this.#film;
+    updatedFilm.userDetails.watchlist = !this.#film.userDetails.watchlist;
+  };
 }

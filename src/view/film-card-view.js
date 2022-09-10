@@ -45,8 +45,54 @@ export default class NewFilmCardView extends AbstractView {
   };
 
   #clickHandler = (evt) => {
+    if (evt.target.tagName === 'BUTTON') {
+      return;
+    }
+
     evt.preventDefault();
 
-    this._callback.click();
+    this._callback.click(this.#film);
+  };
+
+  /* --- Обработчики на кнопку Favorite карточки --- */
+
+  setFavoriteClickHandler = (callback) => {
+    this._callback.favoriteClick = callback;
+    this.element.querySelector('.film-card__controls-item--favorite').addEventListener('click', this.#favoriteClickHandler);
+  };
+
+  #favoriteClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.favoriteClick();
+
+    evt.target.classList.toggle('film-card__controls-item--active');
+  };
+
+  /* --- Обработчики на кнопку Already Watched карточки --- */
+
+  setAlreadyWatchedClickHandler = (callback) => {
+    this._callback.alreadyWatchedClick = callback;
+    this.element.querySelector('.film-card__controls-item--mark-as-watched').addEventListener('click', this.#alreadyWatchedClickHandler);
+  };
+
+  #alreadyWatchedClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.alreadyWatchedClick();
+
+    evt.target.classList.toggle('film-card__controls-item--active');
+  };
+
+  /* --- Обработчики на кнопку Watch Later карточки --- */
+
+  setWatchLaterClickHandler = (callback) => {
+    this._callback.watchLaterClick = callback;
+    this.element.querySelector('.film-card__controls-item--add-to-watchlist').addEventListener('click', this.#watchLaterClickHandler);
+  };
+
+  #watchLaterClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.watchLaterClick();
+
+    evt.target.classList.toggle('film-card__controls-item--active');
   };
 }

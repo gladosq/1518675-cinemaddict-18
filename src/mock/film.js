@@ -1,4 +1,5 @@
 import dayjs from 'dayjs';
+import {nanoid} from 'nanoid';
 
 import {getRandomInteger, getRandomDate} from '../utils.js';
 import {FILM_NAMES, FILM_DESCRIPTIONS, FILM_GENRES, FILM_POSTERS, FILM_COUNTRIES} from '../mock/const.js';
@@ -47,7 +48,7 @@ const genereateCommentsId = () => {
 };
 
 export const generateFilmInfo = () => ({
-  id: 0,
+  id: nanoid(5),
   comments: genereateCommentsId(),
   filmInfo: {
     title: generateFilmName(),
