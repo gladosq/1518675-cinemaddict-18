@@ -122,11 +122,7 @@ export default class BoardPresenter {
   #sortTypeChangeHandler = (sortType) => {
     const changeNewFilter = sortTypeChange(sortType);
 
-    if (changeNewFilter !== false) {
-      this.#boardFilms = changeNewFilter(this.#boardFilms);
-    } else {
-      this.#boardFilms = this.#defaultFilms.slice();
-    }
+    this.#boardFilms = (changeNewFilter) ? changeNewFilter(this.#boardFilms) : this.#defaultFilms.slice();
 
     /* --- Перерисовываем сортировку с актуальным фильтром --- */
 
@@ -142,7 +138,12 @@ export default class BoardPresenter {
 
   #filmChangeHandler = (updatedFilm) => {
     this.#boardFilms = updateFilm(this.#boardFilms, updatedFilm);
-    this.#filmsPresenterCollection.get(updatedFilm.id).init(updatedFilm);
+
+    /* --- Перерендер списка фильмов после смены состояни в попапе --- */
+
+    this.#clearFilmList();
+    this.#renderFilms(0, Math.min(this.#boardFilms.length, FILM_COUNT_PER_STEP));
+    this.#renderLoadMoreButton();
   };
 
   #checkSinglePopupHandler = () => {

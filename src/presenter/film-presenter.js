@@ -76,7 +76,16 @@ export default class FilmPresenter {
 
     render(new NewPopupWrapperView(), footer, RenderPosition.AFTEREND);
     const popupInnerWrapper = document.querySelector('.film-details__inner');
-    render(new NewPopupTopContainerView(this.#film['filmInfo']), popupInnerWrapper);
+
+    const popupFilmButtonsComponent = new NewPopupTopContainerView(this.#film);
+
+    /* --- Навешиваем обработчики на кнопки в попапе --- */
+
+    popupFilmButtonsComponent.setFavoriteClickHandler(this.#clickFavoritePopupHandler);
+    popupFilmButtonsComponent.setAlreadyWatchedClickHandler(this.#clickAlreadyWatchedPopupHandler);
+    popupFilmButtonsComponent.setWatchLaterClickHandler(this.#clickWatchLaterPopupHandler);
+
+    render(popupFilmButtonsComponent, popupInnerWrapper);
     render(new NewPopupBottomContainerView(this.#film['comments']), popupInnerWrapper);
 
     /* --- Обработчик на кнопку закрытия попапа --- */
@@ -98,11 +107,12 @@ export default class FilmPresenter {
     this.#showPopup(film);
 
     /* --- Генерируем комментарии по айдишникам --- */
+
     const comments = generateComments(film.comments);
 
     /* --- Рендерим комментарии во view --- */
-    this.#renderComments(comments);
 
+    this.#renderComments(comments);
     document.addEventListener('keydown', this.#onEscKeyDown);
   };
 
@@ -110,11 +120,11 @@ export default class FilmPresenter {
     remove(this.#filmComponent);
   };
 
+  /* --- Обработчики на кнопки в карточке фильма --- */
+
   #clickFavoriteHandler = () => {
     const updatedFilm = this.#film;
     updatedFilm.userDetails.favorite = !this.#film.userDetails.favorite;
-
-    // this.#changeFilm({...this.#film, favorite: !this.#film.userDetails.favorite});
   };
 
   #clickAlreadyWatchedHandler = () => {
@@ -125,5 +135,25 @@ export default class FilmPresenter {
   #clickWatchLaterHandler = () => {
     const updatedFilm = this.#film;
     updatedFilm.userDetails.watchlist = !this.#film.userDetails.watchlist;
+  };
+
+  /* --- Обработчики на кнопки в попапе --- */
+
+  #clickFavoritePopupHandler = () => {
+    const updatedFilm = this.#film;
+    updatedFilm.userDetails.favorite = !this.#film.userDetails.favorite;
+    this.#changeFilm(updatedFilm);
+  };
+
+  #clickAlreadyWatchedPopupHandler = () => {
+    const updatedFilm = this.#film;
+    updatedFilm.userDetails.alreadyWatched = !this.#film.userDetails.alreadyWatched;
+    this.#changeFilm(updatedFilm);
+  };
+
+  #clickWatchLaterPopupHandler = () => {
+    const updatedFilm = this.#film;
+    updatedFilm.userDetails.watchlist = !this.#film.userDetails.watchlist;
+    this.#changeFilm(updatedFilm);
   };
 }
