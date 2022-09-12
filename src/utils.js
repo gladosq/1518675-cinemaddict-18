@@ -26,6 +26,7 @@ const sortByRating = (films) => {
   return sortedFilms.sort((a, b) => b.filmInfo.totalRating - a.filmInfo.totalRating);
 };
 
+
 const sortTypeChange = (sortType) => {
   if (sortType === 'by-date') {
     return sortByDate;
@@ -35,7 +36,21 @@ const sortTypeChange = (sortType) => {
     return sortByRating;
   }
 
-  return -1;
+  return false;
 };
 
-export {getRandomInteger, getRandomDate, checkNotEsc, sortByDate, sortByRating, sortTypeChange};
+const updateFilm = (films, update) => {
+  const index = films.findIndex((film) => film.id === update.id);
+
+  if (index === -1) {
+    return films;
+  }
+
+  return [
+    ...films.slice(0, index),
+    update,
+    ...films.slice(index + 1),
+  ];
+};
+
+export {updateFilm, getRandomInteger, getRandomDate, checkNotEsc, sortByDate, sortByRating, sortTypeChange};
