@@ -2,6 +2,7 @@ import NewSortFilterView from '../view/new-sort-filter-view.js';
 import NewFilmListView from '../view/film-list-view.js';
 import NewShowMoreButtonView from '../view/show-more-button-view.js';
 import NewEmptyFilmListView from '../view/empty-film-list-view.js';
+import NewMainNavigationView from '../view/main-navigation-view.js';
 
 import {RenderPosition} from '../render.js';
 import {render, remove} from '../framework/render.js';
@@ -17,6 +18,7 @@ export default class BoardPresenter {
   #boardContainer = null;
   #filmsModel = null;
 
+  #mainNavigationComponent = new NewMainNavigationView();
   #filmListComponent = new NewFilmListView();
   #sortFilmComponent = new NewSortFilterView('default');
   #noFilmsComponent = new NewEmptyFilmListView();
@@ -51,7 +53,6 @@ export default class BoardPresenter {
       remove(this.#loadMoreButtonComponent);
     }
   };
-
 
   /* --- Рендер блока сортировки --- */
 
@@ -91,6 +92,8 @@ export default class BoardPresenter {
   };
 
   #renderBoard = () => {
+    this.#renderMainNavigation();
+
     if (this.#boardFilms.length < 1) {
       this.#renderNoFilms();
       return;
@@ -98,6 +101,10 @@ export default class BoardPresenter {
 
     this.#renderSort();
     this.#renderFilmList();
+  };
+
+  #renderMainNavigation = () => {
+    render(this.#mainNavigationComponent, this.#boardContainer, RenderPosition.BEFOREBEGIN);
   };
 
   #renderLoadMoreButton = () => {
