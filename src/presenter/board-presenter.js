@@ -52,6 +52,7 @@ export default class BoardPresenter {
     }
   };
 
+
   /* --- Рендер блока сортировки --- */
 
   #renderSort = () => {
