@@ -27,7 +27,7 @@ export default class NewSortFilterView extends AbstractView {
   };
 
   #clickHandler = (evt) => {
-    if (evt.target.tagName !== 'A') {
+    if (evt.target.tagName !== 'A' || evt.target.classList.contains('sort__button--active')) {
       return;
     }
 
