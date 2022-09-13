@@ -28,6 +28,7 @@ const sortByRating = (films) => {
 
 
 const sortTypeChange = (sortType) => {
+
   if (sortType === 'by-date') {
     return sortByDate;
   }
