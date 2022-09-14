@@ -147,7 +147,7 @@ export default class BoardPresenter {
   #filmChangeHandler = (updatedFilm) => {
     this.#boardFilms = updateFilm(this.#boardFilms, updatedFilm);
 
-    /* --- Перерендер списка фильмов после смены состояни в попапе --- */
+    /* --- Ререндер списка фильмов после смены состояния в попапе --- */
 
     this.#clearFilmList();
     this.#renderFilms(0, Math.min(this.#boardFilms.length, FILM_COUNT_PER_STEP));

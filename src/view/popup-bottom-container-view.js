@@ -1,4 +1,4 @@
-import AbstractView from '../framework/view/abstract-view.js';
+import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 
 const createNewPopupBottomContainer = () => `
     <div class="film-details__bottom-container">
@@ -40,17 +40,60 @@ const createNewPopupBottomContainer = () => `
       </section>
     </div>`;
 
-export default class NewPopupBottomContainerView extends AbstractView {
+export default class NewPopupBottomContainerView extends AbstractStatefulView {
   #film = null;
 
   constructor (film) {
     super();
-    this.#film = film;
+    // this.#film = film;
+
+    this._state = NewPopupBottomContainerView.parseTaskToState(film);
   }
 
   #element = null;
 
+  #restoreHandlers = () => {
+
+  };
+
   get template() {
-    return createNewPopupBottomContainer(this.#film);
+    // return createNewPopupBottomContainer(this.#film);
+
+    return createNewPopupBottomContainer(this._state);
   }
+
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.querySelector('.film-details__new-comment').addEventListener('submit', this.#formSubmitHandler);
+  };
+
+  #formSubmitHandler = () => {
+
+  };
+
+  static parseTaskToState = (film) => ({...film,
+
+  });
+
+  static parseStateToTask = () => {
+
+  };
+
+  setChangeEmojiHandler = (callback) => {
+    this._callback.changeEmojiClick = callback;
+    this.element.querySelector('.film-details__emoji-list').addEventListener('click', this.#changeEmojiHandler);
+
+  };
+
+  #changeEmojiHandler = (evt) => {
+
+    if (evt.target.tagName !== 'INPUT') {
+      return;
+    }
+
+    this._callback.changeEmojiClick();
+
+    document.querySelector(`.film-details__emoji-item[value="${evt.target.value}"]`).checked = true;
+    document.querySelector('.film-details__add-emoji-label').innerHTML = `<img src="images/emoji/${evt.target.value}.png" width="55" height="55" alt="emoji-smile">`;
+  };
 }
