@@ -18,6 +18,7 @@ export default class FilmPresenter {
   #filmComponent = null;
   #film = null;
   #checkSinglePopup = null;
+  #popupFilmBottomComponent = null;
 
   constructor(filmListComponent, changeFilm, checkSinglePopup) {
     this.#filmListComponent = filmListComponent;
@@ -29,6 +30,8 @@ export default class FilmPresenter {
 
     this.#film = film;
     this.#filmComponent = new NewFilmCardView(film);
+
+    this.#popupFilmBottomComponent = new NewPopupBottomContainerView(this.#film['comments']);
 
     /* --- Обработчик на открытие попапа --- */
 
@@ -56,9 +59,8 @@ export default class FilmPresenter {
   };
 
   #onEscKeyDown = (evt) => {
-    evt.preventDefault();
 
-    if (!checkNotEsc(evt)) {
+    if (checkNotEsc(evt)) {
       this.#hidePopup();
       document.removeEventListener('keydown', this.#onEscKeyDown);
     }
@@ -86,7 +88,10 @@ export default class FilmPresenter {
     popupFilmButtonsComponent.setWatchLaterClickHandler(this.#clickWatchLaterPopupHandler);
 
     render(popupFilmButtonsComponent, popupInnerWrapper);
-    render(new NewPopupBottomContainerView(this.#film['comments']), popupInnerWrapper);
+
+    this.#renderCommentsPopup();
+
+    this.#popupFilmBottomComponent.setChangeEmojiHandler(this.#clickEmojiPopupHandler);
 
     /* --- Обработчик на кнопку закрытия попапа --- */
 
@@ -96,6 +101,35 @@ export default class FilmPresenter {
     document.body.classList.add('hide-overflow');
   };
 
+  #renderCommentsPopup = () => {
+    const popupInnerWrapper = document.querySelector('.film-details__inner');
+
+    this.#clearCommentsPopup();
+    this.#popupFilmBottomComponent.setChangeEmojiHandler(this.#clickEmojiPopupHandler);
+
+    render(this.#popupFilmBottomComponent, popupInnerWrapper);
+  };
+
+  #clearCommentsPopup = () => {
+    remove(this.#popupFilmBottomComponent);
+  };
+
+  #scrollToBottomPopup = () => {
+    const popup = document.querySelector('.film-details__inner');
+    popup.scrollIntoView(false);
+  };
+
+  /* --- Обработчик на перерисовку нижний части попапа --- */
+
+  #clickEmojiPopupHandler = () => {
+    const comments = generateComments(this.#film.comments);
+
+    this.#renderCommentsPopup();
+    this.#renderComments(comments);
+    this.#scrollToBottomPopup();
+  };
+
+
   #showPopupClickHandler = (film) => {
 
     /* --- Проверка на уже открытый попап --- */
@@ -103,6 +137,8 @@ export default class FilmPresenter {
     if (this.#checkSinglePopup()) {
       this.#hidePopup();
     }
+
+    // this.#clearCommentsPopup();
 
     this.#showPopup(film);
 

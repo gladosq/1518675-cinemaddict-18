@@ -14,7 +14,11 @@ const getRandomDate = () => {
 };
 
 
-const checkNotEsc = (evt) => evt.type === 'keydown' && evt.key !== 'Escape';
+const checkNotEsc = (evt) => {
+  if (evt.type === 'keydown' && evt.key === 'Escape') {
+    return true;
+  }
+};
 
 const sortByDate = (films) => {
   const sortedFilms = films;
