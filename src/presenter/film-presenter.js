@@ -3,8 +3,6 @@ import NewPopupWrapperView from '../view/popup-wrapper-view.js';
 import NewPopupTopContainerView from '../view/popup-top-container-view.js';
 import NewPopupBottomContainerView from '../view/popup-bottom-container-view.js';
 import NewFilmCardView from '../view/film-card-view.js';
-// import NewShowMoreButtonView from '../view/show-more-button-view.js';
-
 import {generateComments} from '../mock/comment.js';
 import {RenderPosition} from '../render.js';
 import {render, remove} from '../framework/render.js';
