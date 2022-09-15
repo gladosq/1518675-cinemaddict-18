@@ -1,6 +1,6 @@
 import AbstractView from '../framework/view/abstract-view.js';
 
-const createNewSingleComment = (_comment) => {
+const createNewSingleComment = (_comment) => {``
   const {author, comment, emotion, date} = _comment;
 
   return (
