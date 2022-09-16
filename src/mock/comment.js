@@ -1,5 +1,6 @@
-import {getRandomInteger} from '../utils.js';
+import {getRandomInteger, getRandomDate} from '../utils.js';
 import {FILM_COMMENTS, FILM_COMMENT_AUTHORS, FILM_COMMENT_REACTIONS} from '../mock/const.js';
+import dayjs from 'dayjs';
 
 const generateComment = () => {
   const randomIndex = getRandomInteger(0, FILM_COMMENTS.length - 1);
@@ -16,6 +17,8 @@ const generateReaction = () => {
   return FILM_COMMENT_REACTIONS[randomIndex];
 };
 
+const generateRandomDate = () => dayjs(getRandomDate()).format('YYYY/MM/DD hh:mm');
+
 export const generateComments = (ids) => {
   const comments = [];
 
@@ -24,7 +27,7 @@ export const generateComments = (ids) => {
       id: item,
       author: generateAuthor(),
       comment: generateComment(),
-      date: '2019-05-11T16:12:32.554Z',
+      date: generateRandomDate(),
       emotion: generateReaction()
     });
   });

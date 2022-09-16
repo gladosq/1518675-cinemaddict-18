@@ -33,6 +33,8 @@ const generateFilmCountry = () => {
   return FILM_COUNTRIES[randomIndex];
 };
 
+const generateFilmRuntime = () => `${getRandomInteger(25, 190)}`;
+
 const genereateCommentsId = () => {
   const commentsId = [];
 
@@ -67,7 +69,7 @@ export const generateFilmInfo = () => ({
       date: generateRandomDate(),
       releaseCountry: generateFilmCountry()
     },
-    runtime: 77,
+    runtime: generateFilmRuntime(),
     genre: [ generateFilmGenre() ],
     description: generateFilmDescription()
   },

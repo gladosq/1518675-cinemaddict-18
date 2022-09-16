@@ -2,7 +2,11 @@ import AbstractView from '../framework/view/abstract-view.js';
 import dayjs from 'dayjs';
 
 const createNewFilmCard = (film) => {
-  const {title, poster, description, totalRating} = film.filmInfo;
+  const {title, poster, description, totalRating, runtime} = film.filmInfo;
+
+  const durationFilm = dayjs().minute(runtime);
+  const hours = durationFilm.hour();
+  const minutes = durationFilm.minute();
 
   return (
     `<article class="film-card">
@@ -11,7 +15,7 @@ const createNewFilmCard = (film) => {
         <p class="film-card__rating">${totalRating}</p>
         <p class="film-card__info">
           <span class="film-card__year">${dayjs(film.filmInfo.release.date).format('YYYY')}</span>
-          <span class="film-card__duration">1h 55m</span>
+          <span class="film-card__duration">${hours}h ${minutes}m</span>
           <span class="film-card__genre">Musical</span>
         </p>
         <img src="${poster}" alt="" class="film-card__poster">

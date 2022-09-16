@@ -1,8 +1,13 @@
 import AbstractView from '../framework/view/abstract-view.js';
+import dayjs from 'dayjs';
 
 const createNewPopupTopContainer = (film) => {
-  const {title, poster, description, totalRating} = film.filmInfo;
+  const {title, poster, description, totalRating, runtime} = film.filmInfo;
   const {date, releaseCountry} = film.filmInfo.release;
+
+  const durationFilm = dayjs().minute(runtime);
+  const hours = durationFilm.hour();
+  const minutes = durationFilm.minute();
 
   return (
     `<div class="film-details__top-container">
@@ -46,7 +51,7 @@ const createNewPopupTopContainer = (film) => {
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Runtime</td>
-              <td class="film-details__cell">1h 18m</td>
+              <td class="film-details__cell">${hours}h ${minutes}m</td>
             </tr>
             <tr class="film-details__row">
               <td class="film-details__term">Country</td>
