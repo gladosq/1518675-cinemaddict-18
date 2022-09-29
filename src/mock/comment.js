@@ -1,4 +1,4 @@
-import {getRandomInteger, getRandomDate} from '../utils.js';
+import {getRandomInteger, getRandomDate} from '../utils/utils.js';
 import {FILM_COMMENTS, FILM_COMMENT_AUTHORS, FILM_COMMENT_REACTIONS} from '../mock/const.js';
 import dayjs from 'dayjs';
 

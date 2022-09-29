@@ -50,10 +50,28 @@ const FILM_COMMENT_REACTIONS = ['smile', 'sleeping', 'puke', 'angry'];
 
 const FILM_COUNTRIES = ['Finland', 'Russia', 'Germany', 'Spain', 'Italy', 'Japan'];
 
-const SORT_TYPES = {
+const SortType = {
   DEFAULT: 'default',
   BY_DATE: 'by-date',
   BY_RATING: 'by-rating'
 };
 
-export {SORT_TYPES, FILM_NAMES, FILM_DESCRIPTIONS, FILM_GENRES, FILM_POSTERS, FILM_COMMENTS, FILM_COMMENT_AUTHORS, FILM_COMMENT_REACTIONS, FILM_COUNTRIES};
+const FilterType = {
+  ALL: 'all',
+  WATCHLIST: 'watchlist',
+  HISTORY: 'history',
+  FAVORITES: 'favorites'
+};
+
+const UpdateType = {
+  PATCH: 'PATCH',
+  MINOR: 'MINOR',
+  MAJOR: 'MAJOR'
+};
+
+const UserAction = {
+  SORT: 'sort',
+  FILTER: 'filter'
+};
+
+export {FilterType, UpdateType, UserAction, SortType, FILM_NAMES, FILM_DESCRIPTIONS, FILM_GENRES, FILM_POSTERS, FILM_COMMENTS, FILM_COMMENT_AUTHORS, FILM_COMMENT_REACTIONS, FILM_COUNTRIES};

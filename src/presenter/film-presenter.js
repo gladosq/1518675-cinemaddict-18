@@ -7,7 +7,7 @@ import {generateComments} from '../mock/comment.js';
 import {RenderPosition} from '../render.js';
 import {render, remove} from '../framework/render.js';
 
-import {checkNotEsc} from '../utils.js';
+import {checkNotEsc} from '../utils/utils.js';
 
 export default class FilmPresenter {
 
@@ -27,6 +27,9 @@ export default class FilmPresenter {
   init = (film) => {
 
     this.#film = film;
+
+    const prevFilmComponent = this.#filmComponent;
+
     this.#filmComponent = new NewFilmCardView(film);
 
     this.#popupFilmBottomComponent = new NewPopupBottomContainerView(this.#film['comments']);

@@ -32,7 +32,6 @@ const sortByRating = (films) => {
 
 
 const sortTypeChange = (sortType) => {
-
   if (sortType === 'by-date') {
     return sortByDate;
   }
@@ -44,18 +43,18 @@ const sortTypeChange = (sortType) => {
   return false;
 };
 
-const updateFilm = (films, update) => {
-  const index = films.findIndex((film) => film.id === update.id);
+// const updateFilm = (films, update) => {
+//   const index = films.findIndex((film) => film.id === update.id);
 
-  if (index === -1) {
-    return films;
-  }
+//   if (index === -1) {
+//     return films;
+//   }
 
-  return [
-    ...films.slice(0, index),
-    update,
-    ...films.slice(index + 1),
-  ];
-};
+//   return [
+//     ...films.slice(0, index),
+//     update,
+//     ...films.slice(index + 1),
+//   ];
+// };
 
-export {updateFilm, getRandomInteger, getRandomDate, checkNotEsc, sortByDate, sortByRating, sortTypeChange};
+export {getRandomInteger, getRandomDate, checkNotEsc, sortByDate, sortByRating, sortTypeChange};
